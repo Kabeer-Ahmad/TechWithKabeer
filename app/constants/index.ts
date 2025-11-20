@@ -114,46 +114,110 @@ export const EXPERIENCES = [
 
 export const PROJECTS = [
     {
+        title: "Stylique",
+        subtitle: "Next-Gen AI Fashion Platform + Plugins",
+        description: "AI-powered styling assistant that helps you make smart shopping decisions and try outfits virtually. Get personalized recommendations that match your style perfectly.",
+        tech: ["Next.js", "AI/ML", "Virtual Try-On", "TypeScript", "TailwindCSS", "Fashion Tech"],
+        demoLink: "https://www.styliquetechnologies.com/",
+        githubLink: "https://github.com/nexium-global/stylique-project-code"
+    },
+    {
+        title: "Dressify",
+        subtitle: "AI-Driven Digital Wardrobe Manager",
+        description: "An end-to-end platform designed to revolutionize the way users manage and leverage their wardrobe. By combining a digital closet manager with an AI-driven recommendation engine, Dressify offers comprehensive item management, intelligent outfit suggestions, and virtual try-ons.",
+        tech: ["Next.js", "AI/ML", "Virtual Try-On", "TypeScript", "Computer Vision", "Fashion Tech"],
+        demoLink: "https://dressify-sable.vercel.app/",
+        githubLink: "https://github.com/Ali-Ch-001/dessify-project-code"
+    },
+    {
+        title: "QuickNote AI",
+        subtitle: "AI-Powered Notes Application",
+        description: "A production-ready AI-powered notes web app built with Next.js, Supabase, and multiple AI providers. Create, manage, and summarize your notes with intelligent AI assistance.",
+        tech: ["Next.js", "TypeScript", "Supabase", "AI/ML", "TailwindCSS", "OpenAI"],
+        demoLink: "https://quick-note-ai-free.vercel.app/",
+        githubLink: "https://github.com/Kabeer-Ahmad/QuickNote-AI"
+    },
+    {
+        title: "Gloria Jean's Coffees POS",
+        subtitle: "Point of Sale System",
+        description: "A modern, web-based Point of Sale (POS) system built with Next.js 15, TypeScript, Tailwind CSS, and Supabase for Gloria Jean's Coffees.",
+        tech: ["Next.js", "TypeScript", "Supabase", "TailwindCSS", "POS System", "Real-time"],
+        demoLink: "https://pos-gloria.vercel.app/",
+        githubLink: "https://github.com/Kabeer-Ahmad/POS_Gloria"
+    },
+    {
+        title: "Binexia Bot",
+        subtitle: "AI-Powered Trading Signal Platform",
+        description: "A modern AI-powered trading signal platform built using Next.js and Supabase. It allows users to access trading signals after registration and payment verification.",
+        tech: ["Next.js", "TypeScript", "Supabase", "AI/ML", "Trading Signals", "Payment Integration"],
+        demoLink: "https://binexia-bot.vercel.app/",
+        githubLink: "https://github.com/Kabeer-Ahmad/binexia-bot"
+    },
+    {
+        title: "Event Ticketing System",
+        subtitle: "Real-time Event Ticketing Platform",
+        description: "A modern, real-time event ticketing platform built with Django, Django Channels, and WebSockets. This system enables fair ticket distribution, live availability updates, and a seamless user experience for both attendees and administrators.",
+        tech: ["Django", "Python", "WebSockets", "Django Channels", "Real-time", "PostgreSQL"],
+        githubLink: "https://github.com/Kabeer-Ahmad/Event-Ticketing-System"
+    },
+    {
+        title: "Sahi Security Limited",
+        subtitle: "Security Services Website",
+        description: "A website for client to show what services they offer and contact them.",
+        tech: ["Next.js", "TypeScript", "TailwindCSS", "React", "Responsive Design"],
+        demoLink: "https://sahi-security-nextjs.vercel.app/",
+        githubLink: "https://github.com/Kabeer-Ahmad/SahiSecurityNextjs"
+    },
+    {
         title: "Finsync",
         subtitle: "A Financial Management Platform",
         description: "Built a P2P payment platform for financial management for underserved communities.",
-        tech: ["Next.js", "TypeScript", "Appwrite", "Plaid", "Dwolla", "React Hook Form", "Zod", "TailwindCSS", "Chart.js"]
+        tech: ["Next.js", "TypeScript", "Appwrite", "Plaid", "Dwolla", "React Hook Form", "Zod", "TailwindCSS", "Chart.js"],
+        demoLink: "https://finsync-delta.vercel.app/",
+        githubLink: "https://github.com/Kabeer-Ahmad/FinSync"
     },
     {
         title: "CoinSensei",
         subtitle: "A Secure USDT Buy/Sell Platform",
         description: "Built a P2P trading platform for secure and seamless USDT transactions in Pakistan.",
-        tech: ["Next.js", "TypeScript", "MySQL", "React Hook Form", "HTML", "TailwindCSS", "CSS", "PHP", "PHP Mailer"]
+        tech: ["Next.js", "TypeScript", "MySQL", "React Hook Form", "HTML", "TailwindCSS", "CSS", "PHP", "PHP Mailer"],
+        demoLink: "https://www.coinsensei.co/",
+        githubLink: "https://github.com/Kabeer-Ahmad/CoinSensei-Web"
     },
     {
-        title: "Scientific Computing Tool",
-        subtitle: "Complex Scientific Calculations",
-        description: "Built a tool for complex scientific calculations and data analysis using NumPy and SciPy.",
-        tech: ["C/C++", "Python (NumPy, SciPy)"]
-    },
-    {
-        title: "Face Detection",
-        subtitle: "Real-time Face Detection",
-        description: "Developed a real-time face detection tool using OpenCV for image processing.",
-        tech: ["Python (OpenCV)", "C++"]
+        title: "IoT-Based Smoke/Temperature Monitoring System",
+        subtitle: "Real-time Monitoring",
+        description: "Built a real-time temperature monitoring system, featuring remote data logging and alerts.",
+        tech: ["IoT", "Python", "Arduino", "Sensors", "ESP 8266"],
+        githubLink: "https://github.com/Kabeer-Ahmad/Smoke-Detection-System-ESP-8266"
     },
     {
         title: "Slingshot Racer",
         subtitle: "Unity Based Car Game",
         description: "Developed an engaging car racing game with a slingshot mechanism.",
-        tech: ["Unity", "C#", "Physics Engine", "Game Mechanics", "UI/UX"]
+        tech: ["Unity", "C#", "Physics Engine", "Game Mechanics", "UI/UX"],
+        githubLink: "https://github.com/Kabeer-Ahmad/SlingShot-Mechanism-Unity-Car-Game"
+    },
+    {
+        title: "Scientific Computing Tool",
+        subtitle: "Complex Scientific Calculations",
+        description: "Built a tool for complex scientific calculations and data analysis using NumPy and SciPy.",
+        tech: ["C/C++", "Python (NumPy, SciPy)"],
+        githubLink: "https://github.com/username/scientific-computing-tool"
+    },
+    {
+        title: "Face Detection",
+        subtitle: "Real-time Face Detection",
+        description: "Developed a real-time face detection tool using OpenCV for image processing.",
+        tech: ["Python (OpenCV)", "C++"],
+        githubLink: "https://github.com/username/face-detection"
     },
     {
         title: "HoneyMaze",
         subtitle: "Maze Solver In Assembly Language",
         description: "Designed a maze game where we have to navigate honeybee to find the exit.",
-        tech: ["Assembly Language (Intel 8088)"]
-    },
-    {
-        title: "IoT-Based Temperature Monitoring System",
-        subtitle: "Real-time Monitoring",
-        description: "Built a real-time temperature monitoring system, featuring remote data logging and alerts.",
-        tech: ["IoT", "Python", "Arduino", "Sensors", "ESP 8266"]
+        tech: ["Assembly Language (Intel 8088)"],
+        githubLink: "https://github.com/username/honeymaze"
     }
 ];
 

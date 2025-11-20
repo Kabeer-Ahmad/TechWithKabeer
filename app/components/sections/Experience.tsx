@@ -21,25 +21,47 @@ export const Experience = () => {
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
-                    className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16"
+                    className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16"
                 >
-                    <Card className="p-6 text-center">
-                        <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-500 mb-2">
+                    <Card className="p-4 text-center group hover:border-purple-500 transition-all cursor-pointer">
+                        <motion.div
+                            className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-500 mb-1"
+                            whileHover={{ scale: 1.1 }}
+                            transition={{ type: "spring", stiffness: 300 }}
+                        >
                             {EXPERIENCES.length}
-                        </div>
-                        <div className="text-gray-400">Positions</div>
+                        </motion.div>
+                        <div className="text-gray-400 text-sm">Positions</div>
                     </Card>
-                    <Card className="p-6 text-center">
-                        <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-500 mb-2">
+                    <Card className="p-4 text-center group hover:border-cyan-500 transition-all cursor-pointer">
+                        <motion.div
+                            className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500 mb-1"
+                            whileHover={{ scale: 1.1 }}
+                            transition={{ type: "spring", stiffness: 300 }}
+                        >
                             {new Set(EXPERIENCES.map(e => e.company)).size}
-                        </div>
-                        <div className="text-gray-400">Companies</div>
+                        </motion.div>
+                        <div className="text-gray-400 text-sm">Companies</div>
                     </Card>
-                    <Card className="p-6 text-center">
-                        <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-500 mb-2">
+                    <Card className="p-4 text-center group hover:border-pink-500 transition-all cursor-pointer">
+                        <motion.div
+                            className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500 mb-1"
+                            whileHover={{ scale: 1.1 }}
+                            transition={{ type: "spring", stiffness: 300 }}
+                        >
                             3+
-                        </div>
-                        <div className="text-gray-400">Years Experience</div>
+                        </motion.div>
+                        <div className="text-gray-400 text-sm">Years Experience</div>
+                    </Card>
+                    <Card className="p-4 text-center group hover:border-cyan-500 transition-all cursor-pointer">
+                        <motion.div
+                            className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-pink-500 mb-1"
+                            whileHover={{ scale: 1.1 }}
+                            transition={{ type: "spring", stiffness: 300 }}
+                        >
+                            55+
+                        </motion.div>
+                        <div className="text-gray-400 text-sm">Projects Delivered</div>
                     </Card>
                 </motion.div>
 

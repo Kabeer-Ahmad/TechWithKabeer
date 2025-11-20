@@ -21,7 +21,7 @@ export const SectionHeading = ({
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-center mb-16 relative"
+            className="text-center mb-8 relative"
         >
             {/* Decorative line */}
             <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/30 to-transparent -z-10" />
