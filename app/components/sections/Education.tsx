@@ -8,12 +8,7 @@ import { GraduationCap, Award, Calendar, Building, ExternalLink, CheckCircle } f
 
 export const Education = () => {
     return (
-        <section id="education" className="flex flex-col items-center justify-center py-20 relative z-20">
-            <SectionHeading
-                icon={<GraduationCap className="text-purple-500" size={48} />}
-                title="About Me"
-                subtitle="My academic journey and professional credentials"
-            />
+        <section id="education" className="flex flex-col items-center justify-center pb-20 pt-0 relative z-20">
 
             <div className="w-full max-w-7xl px-4 md:px-10">
                 {/* Stats */}
@@ -115,8 +110,8 @@ export const Education = () => {
                                                 <div>
                                                     <div className="flex justify-between items-start gap-2 mb-2">
                                                         <span className={`text-xs px-2 py-1 rounded-full border ${item.type === 'Certification'
-                                                                ? 'bg-cyan-500/10 text-cyan-300 border-cyan-500/20'
-                                                                : 'bg-pink-500/10 text-pink-300 border-pink-500/20'
+                                                            ? 'bg-cyan-500/10 text-cyan-300 border-cyan-500/20'
+                                                            : 'bg-pink-500/10 text-pink-300 border-pink-500/20'
                                                             }`}>
                                                             {item.type}
                                                         </span>

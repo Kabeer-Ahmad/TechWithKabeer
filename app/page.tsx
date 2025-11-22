@@ -6,10 +6,12 @@ import { MyApproach } from "./components/sections/MyApproach";
 import { ClientReviews } from "./components/sections/ClientReviews";
 import { Contact } from "./components/sections/Contact";
 import { Navbar } from "./components/ui/Navbar";
+import StarsCanvas from "./components/3d/StarBackground";
 
 export default function Home() {
   return (
     <main className="h-full w-full">
+      <StarsCanvas />
       <Navbar />
       <div className="flex flex-col gap-0">
         <Hero />

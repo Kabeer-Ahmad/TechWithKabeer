@@ -53,14 +53,7 @@ export const Projects = () => {
     };
 
     return (
-        <section id="projects" className="flex flex-col items-center justify-center py-20 relative z-20">
-            <SectionHeading
-                icon={<Rocket className="text-cyan-500" size={48} />}
-                title="My Projects"
-                subtitle="Innovative solutions and applications I've built"
-                gradient="from-cyan-500 to-purple-500"
-            />
-
+        <section id="projects" className="flex flex-col items-center justify-center pb-20 pt-0 relative z-20">
             <div className="w-full max-w-7xl px-4 md:px-10">
                 {/* Stats */}
                 <motion.div

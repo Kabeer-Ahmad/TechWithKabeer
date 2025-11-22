@@ -8,13 +8,7 @@ import { Briefcase, Calendar, MapPin, Award } from "lucide-react";
 
 export const Experience = () => {
     return (
-        <section id="experience" className="flex flex-col items-center justify-center py-20 relative z-20">
-            <SectionHeading
-                icon={<Briefcase className="text-purple-500" size={48} />}
-                title="Professional Experience"
-                subtitle="My journey through the tech industry"
-            />
-
+        <section id="experience" className="flex flex-col items-center justify-center pb-20 pt-0 relative z-20">
             <div className="w-full max-w-7xl px-4 md:px-10">
                 {/* Summary Stats */}
                 <motion.div
