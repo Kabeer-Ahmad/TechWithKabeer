@@ -187,12 +187,16 @@ const SkillCard = ({ category, items, index }: { category: string; items: string
     );
 };
 
+import TechBackground from "../3d/TechBackground";
+
 export const Skills = () => {
     const scrollRef = useRef<HTMLDivElement>(null);
     const skillsArray = Object.entries(SKILLS);
 
     return (
-        <section id="skills" className="flex flex-col items-center justify-center py-10 md:py-14 relative z-20">
+        <section id="skills" className="flex flex-col items-center justify-center py-10 md:py-14 relative z-20 overflow-hidden">
+            <TechBackground className="absolute inset-0 -z-10" />
+
             <SectionHeading
                 icon={<Zap className="text-cyan-500" size={48} />}
                 title="Skills"

@@ -102,7 +102,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="overflow-x-hidden">
+    <html lang="en" className="overflow-x-hidden bg-[#030014]">
       <body className={`${inter.className} bg-[#030014] overflow-x-hidden`}>
         <ScrollProgress />
         <MouseTrace />

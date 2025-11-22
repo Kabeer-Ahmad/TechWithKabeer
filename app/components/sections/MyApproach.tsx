@@ -5,6 +5,7 @@ import { Card } from "../ui/Card";
 import { SectionHeading } from "../ui/SectionHeading";
 import { Lightbulb, Code, Rocket, Settings, CheckCircle, Database, Cloud, Cpu, Zap, Terminal } from "lucide-react";
 import { useEffect, useState } from "react";
+import HexagonBackground from "../3d/HexagonBackground";
 
 const phases = [
     {
@@ -99,24 +100,9 @@ export const MyApproach = () => {
     }, []);
 
     return (
-        <section id="approach" className="flex flex-col items-center justify-center py-10 md:py-14 relative z-20 overflow-hidden">
-            {/* Grid Background */}
-            <div className="absolute inset-0 z-0">
-                {/* Grid pattern */}
-                <div
-                    className="absolute inset-0 opacity-15"
-                    style={{
-                        backgroundImage: `
-                            linear-gradient(to right, rgba(34, 211, 238, 0.1) 1px, transparent 1px),
-                            linear-gradient(to bottom, rgba(34, 211, 238, 0.1) 1px, transparent 1px)
-                        `,
-                        backgroundSize: '60px 60px'
-                    }}
-                />
-                {/* Fade out edges */}
-                <div className="absolute inset-0 bg-gradient-to-b from-[#030014] via-transparent to-[#030014]" />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#030014] via-transparent to-[#030014]" />
-            </div>
+        <section id="approach" className="flex flex-col items-center justify-center py-10 md:py-14 relative z-20 overflow-hidden bg-[#030014]">
+            {/* Hexagon Background */}
+            <HexagonBackground />
 
             <SectionHeading
                 icon={<Lightbulb className="text-purple-500" size={48} />}

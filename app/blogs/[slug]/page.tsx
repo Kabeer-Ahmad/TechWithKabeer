@@ -45,9 +45,23 @@ export default function BlogPostPage() {
 
     if (loading) {
         return (
-            <main className="min-h-screen pt-20 flex items-center justify-center">
-                <div className="text-gray-400">Loading...</div>
-            </main>
+            <>
+                <Navbar />
+                <main className="min-h-screen relative overflow-hidden flex items-center justify-center">
+                    {/* Animated Background */}
+                    <div className="fixed inset-0 bg-gradient-to-br from-purple-900 via-[#030014] to-cyan-900" />
+                    <div className="fixed inset-0 opacity-20 overflow-hidden">
+                        <div className="absolute top-20 -left-4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob" />
+                        <div className="absolute top-20 -right-4 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000" />
+                        <div className="absolute bottom-20 left-20 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000" />
+                    </div>
+
+                    <div className="relative z-10 text-center">
+                        <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-purple-500 border-t-transparent mb-4" />
+                        <div className="text-gray-400 text-lg">Loading article...</div>
+                    </div>
+                </main>
+            </>
         );
     }
 
@@ -73,9 +87,9 @@ export default function BlogPostPage() {
                 {/* Animated Background */}
                 <div className="fixed inset-0 bg-gradient-to-br from-purple-900 via-[#030014] to-cyan-900" />
                 <div className="fixed inset-0 opacity-20 overflow-hidden">
-                    <div className="absolute top-0 -left-4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob" />
-                    <div className="absolute top-0 -right-4 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000" />
-                    <div className="absolute -bottom-8 left-20 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000" />
+                    <div className="absolute top-20 -left-4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob" />
+                    <div className="absolute top-20 -right-4 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000" />
+                    <div className="absolute bottom-20 left-20 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000" />
                 </div>
 
                 <article className="max-w-7xl mx-auto px-4 md:px-10 py-10 md:py-14 relative z-10 pt-28 md:pt-30">
