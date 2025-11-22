@@ -5,6 +5,16 @@ import StarsCanvas from "./components/3d/StarBackground";
 
 const inter = Inter({ subsets: ["latin"] });
 
+import { Viewport } from "next";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: "#030014",
+};
+
 export const metadata: Metadata = {
   title: {
     default: "Kabeer Ahmad - Full Stack Developer | React, Next.js, Node.js Expert",
@@ -92,8 +102,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} bg-[#030014] overflow-y-scroll overflow-x-hidden`}>
+    <html lang="en" className="overflow-x-hidden">
+      <body className={`${inter.className} bg-[#030014] overflow-x-hidden`}>
         <ScrollProgress />
         <MouseTrace />
         {children}

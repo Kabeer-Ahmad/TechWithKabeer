@@ -40,7 +40,7 @@ export const Navbar = () => {
                 initial={{ y: -100 }}
                 animate={{ y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="fixed top-0 w-full z-50 flex justify-center pt-6 px-4"
+                className="fixed top-0 inset-x-0 z-50 flex justify-center pt-6 px-4"
             >
                 <div
                     className={cn(

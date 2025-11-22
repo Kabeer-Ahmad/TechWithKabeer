@@ -5,7 +5,8 @@ import { Card } from "../ui/Card";
 import { SectionHeading } from "../ui/SectionHeading";
 import { SKILLS } from "@/app/constants";
 import { Zap, Code, Database, Cloud, Cpu, Smartphone, Wrench, Palette, Users } from "lucide-react";
-import { useRef, useState } from "react";
+import { useRef } from "react";
+import { MobileScrollProgress } from "../ui/MobileScrollProgress";
 
 // Icons for each category
 const categoryIcons: { [key: string]: any } = {
@@ -187,17 +188,8 @@ const SkillCard = ({ category, items, index }: { category: string; items: string
 };
 
 export const Skills = () => {
-    const [currentSlide, setCurrentSlide] = useState(0);
+    const scrollRef = useRef<HTMLDivElement>(null);
     const skillsArray = Object.entries(SKILLS);
-    const totalSlides = skillsArray.length;
-
-    const nextSlide = () => {
-        setCurrentSlide((prev) => (prev + 1) % totalSlides);
-    };
-
-    const prevSlide = () => {
-        setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
-    };
 
     return (
         <section id="skills" className="flex flex-col items-center justify-center py-10 md:py-14 relative z-20">
@@ -216,52 +208,18 @@ export const Skills = () => {
             </div>
 
             {/* Mobile Slider View */}
-            <div className="md:hidden w-full px-4 relative">
-                <div className="overflow-hidden">
-                    <motion.div
-                        className="flex"
-                        animate={{ x: `-${currentSlide * 100}%` }}
-                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                        drag="x"
-                        dragConstraints={{ left: 0, right: 0 }}
-                        dragElastic={0.2}
-                        onDragEnd={(e, { offset, velocity }) => {
-                            const swipe = offset.x;
-                            if (swipe < -50 && currentSlide < totalSlides - 1) {
-                                nextSlide();
-                            } else if (swipe > 50 && currentSlide > 0) {
-                                prevSlide();
-                            }
-                        }}
-                    >
-                        {skillsArray.map(([category, items], index) => (
-                            <div key={index} className="w-full flex-shrink-0 px-2">
-                                <SkillCard category={category} items={items} index={index} />
-                            </div>
-                        ))}
-                    </motion.div>
-                </div>
-
-                {/* Navigation Dots */}
-                <div className="flex justify-center gap-2 mt-6">
-                    {skillsArray.map((_, index) => (
-                        <button
-                            key={index}
-                            onClick={() => setCurrentSlide(index)}
-                            className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentSlide
-                                ? 'bg-purple-500 w-8'
-                                : 'bg-white/20 hover:bg-white/40'
-                                }`}
-                            aria-label={`Go to slide ${index + 1}`}
-                        />
-                    ))}
-                </div>
-
-                {/* Slide Counter */}
-                <div className="text-center mt-4 text-sm text-gray-400">
-                    {currentSlide + 1} / {totalSlides}
-                </div>
+            <div
+                ref={scrollRef}
+                className="md:hidden w-full flex overflow-x-auto snap-x snap-mandatory gap-4 px-4 pb-8 scrollbar-hide"
+            >
+                {skillsArray.map(([category, items], index) => (
+                    <div key={index} className="w-[85vw] snap-center flex-shrink-0">
+                        <SkillCard category={category} items={items} index={index} />
+                    </div>
+                ))}
             </div>
+
+            <MobileScrollProgress containerRef={scrollRef} />
         </section>
     );
 };

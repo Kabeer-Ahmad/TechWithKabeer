@@ -7,7 +7,8 @@ import { SectionHeading } from "../ui/SectionHeading";
 import { EXPERIENCES, PROJECTS, EDUCATION, CREDENTIALS } from "@/app/constants";
 import { Briefcase, Rocket, GraduationCap, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useRef } from "react";
+import { MobileScrollProgress } from "../ui/MobileScrollProgress";
 
 const PreviewCard = ({
     href,
@@ -154,8 +155,7 @@ const PreviewCard = ({
 };
 
 export const PreviewBoxes = () => {
-    const [currentSlide, setCurrentSlide] = useState(0);
-
+    const scrollRef = useRef<HTMLDivElement>(null);
     const cards = [
         {
             href: "/experience",
@@ -189,16 +189,6 @@ export const PreviewBoxes = () => {
         }
     ];
 
-    const totalSlides = cards.length;
-
-    const nextSlide = () => {
-        setCurrentSlide((prev) => (prev + 1) % totalSlides);
-    };
-
-    const prevSlide = () => {
-        setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
-    };
-
     return (
         <section id="overview" className="flex flex-col items-center justify-center py-10 md:py-14 relative z-20">
             <SectionHeading
@@ -207,62 +197,26 @@ export const PreviewBoxes = () => {
                 gradient="from-purple-500 via-cyan-500 to-purple-500"
             />
 
-            <div className="w-full max-w-7xl px-4 md:px-10">
-                {/* Desktop Grid View */}
-                <div className="hidden md:grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {cards.map((card, index) => (
-                        <PreviewCard key={index} {...card} index={index} />
-                    ))}
-                </div>
-
-                {/* Mobile Slider View */}
-                <div className="md:hidden w-full relative">
-                    <div className="overflow-hidden">
-                        <motion.div
-                            className="flex"
-                            animate={{ x: `-${currentSlide * 100}%` }}
-                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                            drag="x"
-                            dragConstraints={{ left: 0, right: 0 }}
-                            dragElastic={0.2}
-                            onDragEnd={(e, { offset }) => {
-                                const swipe = offset.x;
-                                if (swipe < -50 && currentSlide < totalSlides - 1) {
-                                    nextSlide();
-                                } else if (swipe > 50 && currentSlide > 0) {
-                                    prevSlide();
-                                }
-                            }}
-                        >
-                            {cards.map((card, index) => (
-                                <div key={index} className="w-full flex-shrink-0 px-2">
-                                    <PreviewCard {...card} index={index} />
-                                </div>
-                            ))}
-                        </motion.div>
-                    </div>
-
-                    {/* Navigation Dots */}
-                    <div className="flex justify-center gap-2 mt-6">
-                        {cards.map((_, index) => (
-                            <button
-                                key={index}
-                                onClick={() => setCurrentSlide(index)}
-                                className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentSlide
-                                        ? 'bg-purple-500 w-8'
-                                        : 'bg-white/20 hover:bg-white/40'
-                                    }`}
-                                aria-label={`Go to slide ${index + 1}`}
-                            />
-                        ))}
-                    </div>
-
-                    {/* Slide Counter */}
-                    <div className="text-center mt-4 text-sm text-gray-400">
-                        {currentSlide + 1} / {totalSlides}
-                    </div>
-                </div>
+            {/* Desktop Grid View */}
+            <div className="hidden md:grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-7xl px-4 md:px-10">
+                {cards.map((card, index) => (
+                    <PreviewCard key={index} {...card} index={index} />
+                ))}
             </div>
+
+            {/* Mobile Slider View */}
+            <div
+                ref={scrollRef}
+                className="md:hidden w-full flex overflow-x-auto snap-x snap-mandatory gap-4 px-4 pb-8 scrollbar-hide"
+            >
+                {cards.map((card, index) => (
+                    <div key={index} className="w-[85vw] snap-center flex-shrink-0">
+                        <PreviewCard {...card} index={index} />
+                    </div>
+                ))}
+            </div>
+
+            <MobileScrollProgress containerRef={scrollRef} />
         </section>
     );
 };
