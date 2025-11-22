@@ -11,6 +11,24 @@ import Link from "next/link";
 export const PreviewBoxes = () => {
     return (
         <section id="overview" className="flex flex-col items-center justify-center py-10 md:py-14 relative z-20">
+            {/* Grid Background */}
+            <div className="absolute inset-0 z-0">
+                {/* Grid pattern */}
+                <div 
+                    className="absolute inset-0 opacity-20"
+                    style={{
+                        backgroundImage: `
+                            linear-gradient(to right, rgba(139, 92, 246, 0.1) 1px, transparent 1px),
+                            linear-gradient(to bottom, rgba(139, 92, 246, 0.1) 1px, transparent 1px)
+                        `,
+                        backgroundSize: '50px 50px'
+                    }}
+                />
+                {/* Fade out edges */}
+                <div className="absolute inset-0 bg-gradient-to-b from-[#030014] via-transparent to-[#030014]" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#030014] via-transparent to-[#030014]" />
+            </div>
+
             <SectionHeading
                 title="Who Am I"
                 subtitle="Explore my professional journey, projects, and credentials"

@@ -100,6 +100,24 @@ export const MyApproach = () => {
 
     return (
         <section id="approach" className="flex flex-col items-center justify-center py-10 md:py-14 relative z-20 overflow-hidden">
+            {/* Grid Background */}
+            <div className="absolute inset-0 z-0">
+                {/* Grid pattern */}
+                <div
+                    className="absolute inset-0 opacity-15"
+                    style={{
+                        backgroundImage: `
+                            linear-gradient(to right, rgba(34, 211, 238, 0.1) 1px, transparent 1px),
+                            linear-gradient(to bottom, rgba(34, 211, 238, 0.1) 1px, transparent 1px)
+                        `,
+                        backgroundSize: '60px 60px'
+                    }}
+                />
+                {/* Fade out edges */}
+                <div className="absolute inset-0 bg-gradient-to-b from-[#030014] via-transparent to-[#030014]" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#030014] via-transparent to-[#030014]" />
+            </div>
+
             <SectionHeading
                 icon={<Lightbulb className="text-purple-500" size={48} />}
                 title="My Approach"
@@ -305,17 +323,61 @@ export const MyApproach = () => {
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.6 }}
-                    className="mt-12 text-center"
+                    className="mt-16 text-center relative z-30"
                 >
-                    <p className="text-gray-300 text-lg">
-                        Ready to bring your project to life with this proven approach?
-                    </p>
-                    <a
-                        href="#contact"
-                        className="inline-block mt-4 px-8 py-3 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-semibold hover:scale-105 transition-transform duration-300"
-                    >
-                        Let's Get Started
-                    </a>
+                    {/* Grid Background for CTA */}
+                    <div className="absolute inset-0 -mx-4 md:-mx-10 -my-8 z-0">
+                        <div
+                            className="absolute inset-0 opacity-10"
+                            style={{
+                                backgroundImage: `
+                                    linear-gradient(to right, rgba(168, 85, 247, 0.15) 1px, transparent 1px),
+                                    linear-gradient(to bottom, rgba(168, 85, 247, 0.15) 1px, transparent 1px)
+                                `,
+                                backgroundSize: '40px 40px'
+                            }}
+                        />
+                        {/* Fade out edges */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#030014]" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-[#030014] via-transparent to-[#030014]" />
+                    </div>
+
+                    <div className="relative z-10 bg-white/[0.02] backdrop-blur-sm rounded-2xl p-8 md:p-12 overflow-hidden">
+                        {/* Grid/Mesh background for entire container */}
+                        <div
+                            className="absolute inset-0 opacity-60"
+                            style={{
+                                backgroundImage: `
+                                    linear-gradient(to right, rgba(168, 85, 247, 0.5) 1px, transparent 1px),
+                                    linear-gradient(to bottom, rgba(168, 85, 247, 0.5) 1px, transparent 1px)
+                                `,
+                                backgroundSize: '20px 20px'
+                            }}
+                        />
+
+                        {/* Radial fade overlay */}
+                        <div
+                            className="absolute inset-0"
+                            style={{
+                                background: 'radial-gradient(circle at center, transparent 0%, transparent 40%, rgba(3, 0, 20, 0.8) 80%, rgba(3, 0, 20, 1) 100%)'
+                            }}
+                        />
+
+                        <div className="relative z-10">
+                            <p className="text-white text-xl md:text-2xl font-semibold mb-2">
+                                Let's bring your ideas to life
+                            </p>
+                            <p className="text-gray-300 text-base md:text-lg mb-6">
+                                Ready to bring your project to life with this proven approach?
+                            </p>
+                            <a
+                                href="#contact"
+                                className="inline-block px-8 py-4 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-semibold hover:scale-105 hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] transition-all duration-300"
+                            >
+                                Let's Get Started
+                            </a>
+                        </div>
+                    </div>
                 </motion.div>
             </div>
         </section>
