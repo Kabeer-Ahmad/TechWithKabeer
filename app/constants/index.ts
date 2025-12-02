@@ -30,15 +30,39 @@ export const SOCIAL_LINKS = [
 
 export const EXPERIENCES = [
     {
-        role: "COO | AI Solutions Architect | Full-Stack Dev",
+        role: "Co-Founder & Principal Software Architect",
         company: "Nexium",
-        period: "Apr 2025 – Present",
+        period: "Jan 2025 – Present",
         description: [
             "Spearheading the development of next-generation AI-driven tech solutions, positioning Nexium as a pioneering force in the industry",
             "Implementing forward-thinking strategies to enhance global market penetration, boost brand recognition, and establish Nexium as a dominant player in the tech ecosystem.",
             "Leading AI-driven product development and cloud architecture for next-generation SaaS platforms."
         ],
-        technologies: ["AI/ML", "Cloud Architecture", "SaaS", "Strategic Planning", "Full Stack"]
+        technologies: ["AI/ML", "Cloud Architecture", "SaaS", "Strategic Planning", "Full Stack", "Next.js", "React.js", "Node.js", "Python", "Docker", "HuggingFace", "AWS", "Google Cloud", "Three.js", "TailwindCSS", "TypeScript", "JavaScript", "HTML", "CSS", "SQL", "NoSQL", "PostgreSQL", "MySQL", "MongoDB", "Redis", "CI/CD", "Vercel", "Git / GitHub"]
+    },
+    {
+        role: "Co-Founder & CTO",
+        company: "Stylique Technologies",
+        period: "Oct 2025 – Present",
+        description: [
+            "Strategic Leadership: Defining the tech stack and scaling strategy for the Stylique platform",
+            "Team Management: Overseeing the engineering lifecycle and bridging the gap between business goals and AI capabilities.",
+            "Leadin AI-driven product development and cloud architecture for next-generation SaaS platforArchitected the core AI engine for Virtual TryOn, Size Recommendations, and Clothes Recommendationsms.",
+            "Built the MVP (Minimum Viable Product) and handled all initial full-stack development.",
+            "Designed the database schema and API infrastructure that powers the current platform."
+        ],
+        technologies: ["AI/ML", "Cloud Architecture", "SaaS", "Strategic Planning", "Full Stack", "Next.js", "React.js", "Node.js", "Python", "Docker", "HuggingFace", "AWS", "Google Cloud", "Three.js", "TailwindCSS", "TypeScript", "JavaScript", "HTML", "CSS", "SQL", "NoSQL", "PostgreSQL", "MySQL", "MongoDB", "Redis", "CI/CD", "Vercel", "Git / GitHub"]
+    },
+    {
+        role: "Lead AI Engineer & Founding Member",
+        company: "Stylique Technologies",
+        period: "March 2025 – Oct 2025",
+        description: [
+            "Spearheading the development of next-generation AI-driven tech solutions, positioning Nexium as a pioneering force in the industry",
+            "Implementing forward-thinking strategies to enhance global market penetration, boost brand recognition, and establish Nexium as a dominant player in the tech ecosystem.",
+            "Leading AI-driven product development and cloud architecture for next-generation SaaS platforms."
+        ],
+        technologies: ["AI/ML", "Cloud Architecture", "SaaS", "Strategic Planning", "Full Stack", "Next.js", "React.js", "Node.js", "Python", "Docker", "HuggingFace", "AWS", "Google Cloud", "Three.js", "TailwindCSS", "TypeScript", "JavaScript", "HTML", "CSS", "SQL", "NoSQL", "PostgreSQL", "MySQL", "MongoDB", "Redis", "CI/CD", "Vercel", "Git / GitHub"]
     },
     {
         role: "Software Engineer Intern",
