@@ -1,0 +1,18 @@
+{
+  "default_branch": "main",
+  "branches": [
+    "main",
+    "origin",
+    "vercel/nextjs-and-react-flight-packag-v9kcia"
+  ],
+  "parent": {
+    "main": null,
+    "origin": "main",
+    "vercel/nextjs-and-react-flight-packag-v9kcia": "main"
+  },
+  "order": [
+    "main",
+    "origin",
+    "vercel/nextjs-and-react-flight-packag-v9kcia"
+  ]
+}
