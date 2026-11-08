@@ -1,64 +1,44 @@
-"use client";
-
-import { motion } from "framer-motion";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import { ReactNode } from "react";
+import { Reveal } from "./Reveal";
+import { TitleReveal } from "./TitleReveal";
+import { cn } from "@/app/lib/utils";
 
 interface SectionHeadingProps {
-    icon?: ReactNode;
-    title: string;
-    subtitle?: string;
-    gradient?: string;
+    index?: string;
+    label: string;
+    title: ReactNode;
+    description?: ReactNode;
+    action?: { href: string; label: string };
+    className?: string;
 }
 
-export const SectionHeading = ({
-    icon,
-    title,
-    subtitle,
-    gradient = "from-purple-500 to-cyan-500"
-}: SectionHeadingProps) => {
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-8 relative"
-        >
-            {/* Decorative line */}
-            <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/30 to-transparent -z-10" />
-
-            <div className="flex flex-col items-center gap-4 px-8 py-4">
-                {icon && (
-                    <motion.div
-                        initial={{ scale: 0, rotate: -180 }}
-                        whileInView={{ scale: 1, rotate: 0 }}
-                        transition={{ duration: 0.6, type: "spring" }}
-                    >
-                        {icon}
-                    </motion.div>
-                )}
-
-                <h2 className={`text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r ${gradient} relative`}>
-                    {title}
-                    {/* Underline decoration */}
-                    <motion.div
-                        initial={{ scaleX: 0 }}
-                        whileInView={{ scaleX: 1 }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-                        className={`absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r ${gradient} origin-left`}
-                    />
-                </h2>
-
-                {subtitle && (
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ duration: 0.5, delay: 0.3 }}
-                        className="text-gray-400 text-lg max-w-2xl"
-                    >
-                        {subtitle}
-                    </motion.p>
-                )}
-            </div>
-        </motion.div>
-    );
-};
+/**
+ * Editorial section header: "01 — Label" eyebrow, large title (wrap words in
+ * <em> for the serif-italic accent), optional description and link.
+ */
+export const SectionHeading = ({ index, label, title, description, action, className }: SectionHeadingProps) => (
+    <Reveal className={cn("mb-12 md:mb-16", className)}>
+        <div className="flex items-center gap-3 eyebrow">
+            {index && <span className="text-accent">{index}</span>}
+            <span className="h-px w-8 bg-line-strong" />
+            <span>{label}</span>
+        </div>
+        <div className="mt-5 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <TitleReveal className="max-w-3xl text-balance text-4xl font-medium leading-[1.05] tracking-[-0.03em] text-fg md:text-6xl [&_em]:font-serif [&_em]:font-normal [&_em]:italic [&_em]:tracking-normal [&_em]:text-accent">
+                {title}
+            </TitleReveal>
+            {action && (
+                <Link
+                    href={action.href}
+                    className="group inline-flex shrink-0 items-center gap-2 self-start rounded-full border border-line-strong px-4 py-2 text-sm text-muted transition-colors hover:border-accent hover:text-fg md:self-auto"
+                >
+                    {action.label}
+                    <ArrowUpRight size={16} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                </Link>
+            )}
+        </div>
+        {description && <p className="mt-5 max-w-2xl text-pretty text-base leading-relaxed text-muted md:text-lg">{description}</p>}
+    </Reveal>
+);

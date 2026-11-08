@@ -1,13 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { SectionHeading } from "../../components/ui/SectionHeading";
-import { Card } from "../../components/ui/Card";
-import { Navbar } from "../../components/ui/Navbar";
-import { Save, Upload, Eye, ArrowLeft } from "lucide-react";
+import { ArrowLeft, Lock, Save, Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { PageShell } from "../../components/ui/PageShell";
+
+const field =
+    "w-full rounded-xl border border-line bg-white/[0.02] px-4 py-3 text-fg placeholder:text-dim transition-colors focus:border-accent focus:outline-none";
+const labelCls = "mb-2 block font-mono text-[11px] uppercase tracking-[0.14em] text-dim";
 
 export default function NewBlogPage() {
     const router = useRouter();
@@ -24,14 +26,6 @@ export default function NewBlogPage() {
         published: false
     });
 
-    useEffect(() => {
-        // Make body background transparent to show gradient
-        document.body.style.background = 'transparent';
-
-        return () => {
-            document.body.style.background = '';
-        };
-    }, []);
 
     const handleAuthentication = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -138,227 +132,153 @@ export default function NewBlogPage() {
     };
 
     return (
-        <>
-            <Navbar />
-            <main className="min-h-screen relative overflow-hidden">
-                {/* Animated Background */}
-                <div className="fixed inset-0 bg-gradient-to-br from-purple-900 via-[#030014] to-cyan-900" />
-                <div className="fixed inset-0 opacity-20 overflow-hidden">
-                    <div className="absolute top-20 -left-4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob" />
-                    <div className="absolute top-20 -right-4 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000" />
-                    <div className="absolute bottom-20 left-20 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000" />
-                </div>
+        <PageShell footer={false}>
+            <section className="mx-auto max-w-3xl px-5 pb-24 pt-36 md:pt-44">
+                <Link href="/blogs" className="group inline-flex items-center gap-2 eyebrow transition-colors hover:text-fg">
+                    <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-0.5" /> All posts
+                </Link>
+                <h1 className="mt-6 text-5xl font-medium tracking-[-0.04em] text-fg md:text-6xl">
+                    New <em className="font-serif font-normal italic tracking-normal text-accent">post</em>
+                </h1>
+                <p className="mt-4 text-lg text-muted">Write in Markdown. Publish when it&apos;s ready.</p>
 
-                <section className="flex flex-col items-center justify-center py-10 md:py-14 relative z-10 pt-40">
-                    <div className="w-full max-w-4xl px-4 md:px-10">
+                {!isAuthenticated ? (
+                    <motion.div
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mt-12 max-w-md panel p-8"
+                    >
+                        <span className="grid size-12 place-items-center rounded-xl bg-accent/10 text-accent">
+                            <Lock size={20} />
+                        </span>
+                        <h2 className="mt-5 text-2xl font-medium tracking-tight text-fg">Admin access</h2>
+                        <p className="mt-1 text-sm text-muted">Enter the admin password to create a post.</p>
 
-                        <div className="text-center mt-4 md:mt-14 mb-8">
-                            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                                Create New <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">Blog Post</span>
-                            </h1>
-                            <p className="text-gray-300 text-lg mb-6">
-                                Share your knowledge with the world
-                            </p>
-
-                            {/* Back Button */}
-                            <Link href="/blogs">
-                                <motion.button
-                                    whileHover={{ scale: 1.05, x: -5 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 transition-all shadow-lg"
+                        <form onSubmit={handleAuthentication} className="mt-6 space-y-4">
+                            <div>
+                                <label htmlFor="admin-password" className="sr-only">Admin password</label>
+                                <input
+                                    id="admin-password"
+                                    type="password"
+                                    value={adminPassword}
+                                    onChange={(e) => {
+                                        setAdminPassword(e.target.value);
+                                        setAuthError("");
+                                    }}
+                                    placeholder="Admin password"
+                                    className={field}
+                                    autoFocus
+                                />
+                                {authError && <p className="mt-2 text-sm text-red-400">{authError}</p>}
+                            </div>
+                            <div className="flex gap-3">
+                                <Link href="/blogs" className="flex-1 rounded-xl border border-line px-4 py-3 text-center text-sm text-muted transition-colors hover:text-fg">
+                                    Cancel
+                                </Link>
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="flex-1 rounded-xl bg-fg px-4 py-3 text-sm font-medium text-ink transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
                                 >
-                                    <ArrowLeft size={20} />
-                                    Back to Blogs
-                                </motion.button>
-                            </Link>
+                                    {loading ? "Verifying…" : "Continue"}
+                                </button>
+                            </div>
+                        </form>
+                    </motion.div>
+                ) : (
+                    <form onSubmit={handleSubmit} className="mt-12 space-y-7">
+                        <div>
+                            <label htmlFor="title" className={labelCls}>Title *</label>
+                            <input
+                                id="title"
+                                type="text"
+                                required
+                                value={formData.title}
+                                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                placeholder="A great headline"
+                                className={`${field} text-xl`}
+                            />
                         </div>
 
-                        {/* Authentication Gate */}
-                        {!isAuthenticated ? (
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                className="max-w-md mx-auto"
+                        <div>
+                            <label htmlFor="excerpt" className={labelCls}>Excerpt</label>
+                            <textarea
+                                id="excerpt"
+                                value={formData.excerpt}
+                                onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                                placeholder="One or two sentences shown on the blog list (optional)"
+                                rows={3}
+                                className={field}
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor="content" className={labelCls}>Content * · Markdown</label>
+                            <textarea
+                                id="content"
+                                required
+                                value={formData.content}
+                                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                                placeholder="# Start writing…"
+                                rows={18}
+                                className={`${field} font-mono text-sm leading-relaxed`}
+                            />
+                        </div>
+
+                        <div>
+                            <span className={labelCls}>Cover image</span>
+                            <div className="flex items-center gap-3">
+                                <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" id="cover-upload" />
+                                <label
+                                    htmlFor="cover-upload"
+                                    className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-line px-4 py-2.5 text-sm text-muted transition-colors hover:border-line-strong hover:text-fg"
+                                >
+                                    <Upload size={16} /> Upload image
+                                </label>
+                                {formData.cover_image && <span className="text-sm text-signal">✓ Uploaded</span>}
+                            </div>
+                            {formData.cover_image && (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img src={formData.cover_image} alt="Cover preview" className="mt-4 max-h-56 rounded-2xl border border-line object-cover" />
+                            )}
+                        </div>
+
+                        <div>
+                            <label htmlFor="tags" className={labelCls}>Tags · comma-separated</label>
+                            <input
+                                id="tags"
+                                type="text"
+                                value={formData.tags}
+                                onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                                placeholder="Next.js, AI, Automation"
+                                className={field}
+                            />
+                        </div>
+
+                        <label htmlFor="published" className="flex cursor-pointer items-center gap-3 text-fg">
+                            <input
+                                type="checkbox"
+                                id="published"
+                                checked={formData.published}
+                                onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
+                                className="size-5 rounded accent-[#b4a1ff]"
+                            />
+                            Publish immediately
+                        </label>
+
+                        <div className="border-t border-line pt-7">
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-fg px-6 py-3.5 font-medium text-ink transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
                             >
-                                <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 p-8">
-                                    <div className="text-center mb-6">
-                                        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 flex items-center justify-center">
-                                            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                            </svg>
-                                        </div>
-                                        <h3 className="text-2xl font-bold text-white mb-2">Admin Authentication</h3>
-                                        <p className="text-gray-400">Enter your admin password to create a blog post</p>
-                                    </div>
-
-                                    <form onSubmit={handleAuthentication} className="space-y-4">
-                                        <div>
-                                            <input
-                                                type="password"
-                                                value={adminPassword}
-                                                onChange={(e) => {
-                                                    setAdminPassword(e.target.value);
-                                                    setAuthError("");
-                                                }}
-                                                placeholder="Admin Password"
-                                                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors"
-                                                autoFocus
-                                            />
-                                            {authError && (
-                                                <p className="text-red-400 text-sm mt-2">{authError}</p>
-                                            )}
-                                        </div>
-
-                                        <div className="flex gap-3">
-                                            <Link href="/blogs" className="flex-1">
-                                                <button
-                                                    type="button"
-                                                    className="w-full px-4 py-3 rounded-lg bg-white/5 text-white hover:bg-white/10 transition-colors"
-                                                >
-                                                    Cancel
-                                                </button>
-                                            </Link>
-                                            <button
-                                                type="submit"
-                                                disabled={loading}
-                                                className="flex-1 px-4 py-3 rounded-lg bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-semibold hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
-                                            >
-                                                {loading ? 'Verifying...' : 'Continue'}
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </motion.div>
-                        ) : (
-                            <>
-                                {/* Blog Creation Form */}
-                                <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 p-6 md:p-8">
-                                    <form onSubmit={handleSubmit} className="space-y-6">
-                                        {/* Title */}
-                                        <div>
-                                            <label className="block text-white font-semibold mb-2">Title *</label>
-                                            <input
-                                                type="text"
-                                                required
-                                                value={formData.title}
-                                                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                                placeholder="Enter blog title"
-                                                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500"
-                                            />
-                                        </div>
-
-                                        {/* Excerpt */}
-                                        <div>
-                                            <label className="block text-white font-semibold mb-2">Excerpt</label>
-                                            <textarea
-                                                value={formData.excerpt}
-                                                onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-                                                placeholder="Brief description (optional)"
-                                                rows={3}
-                                                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500"
-                                            />
-                                        </div>
-
-                                        {/* Content */}
-                                        <div>
-                                            <label className="block text-white font-semibold mb-2">Content * (Markdown supported)</label>
-                                            <textarea
-                                                required
-                                                value={formData.content}
-                                                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                                                placeholder="Write your blog content in Markdown..."
-                                                rows={15}
-                                                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 font-mono text-sm"
-                                            />
-                                        </div>
-
-                                        {/* Cover Image */}
-                                        <div>
-                                            <label className="block text-white font-semibold mb-2">Cover Image</label>
-                                            <div className="flex gap-3">
-                                                <input
-                                                    type="file"
-                                                    accept="image/*"
-                                                    onChange={handleImageUpload}
-                                                    className="hidden"
-                                                    id="cover-upload"
-                                                />
-                                                <label
-                                                    htmlFor="cover-upload"
-                                                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 text-white hover:bg-white/10 transition-colors cursor-pointer border border-white/10"
-                                                >
-                                                    <Upload size={20} />
-                                                    Upload Image
-                                                </label>
-                                                {formData.cover_image && (
-                                                    <span className="text-green-400 text-sm flex items-center">✓ Image uploaded</span>
-                                                )}
-                                            </div>
-                                            {formData.cover_image && (
-                                                <img src={formData.cover_image} alt="Cover" className="mt-3 rounded-lg max-h-48 object-cover" />
-                                            )}
-                                        </div>
-
-                                        {/* Tags */}
-                                        <div>
-                                            <label className="block text-white font-semibold mb-2">Tags (comma-separated)</label>
-                                            <input
-                                                type="text"
-                                                value={formData.tags}
-                                                onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-                                                placeholder="Next.js, React, TypeScript"
-                                                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500"
-                                            />
-                                        </div>
-
-                                        {/* Published */}
-                                        <div className="flex items-center gap-3">
-                                            <input
-                                                type="checkbox"
-                                                id="published"
-                                                checked={formData.published}
-                                                onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
-                                                className="w-5 h-5 rounded bg-white/5 border border-white/10 checked:bg-purple-500"
-                                            />
-                                            <label htmlFor="published" className="text-white">Publish immediately</label>
-                                        </div>
-
-                                        {/* Submit Button */}
-                                        <div className="flex gap-3 pt-4">
-                                            <button
-                                                type="submit"
-                                                disabled={loading}
-                                                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-semibold hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
-                                            >
-                                                <Save size={20} />
-                                                {loading ? 'Creating...' : 'Create Blog Post'}
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </>
-                        )}
-                    </div>
-                </section>
-            </main>
-
-            <style jsx global>{`
-                @keyframes blob {
-                    0% { transform: translate(0px, 0px) scale(1); }
-                    33% { transform: translate(30px, -50px) scale(1.1); }
-                    66% { transform: translate(-20px, 20px) scale(0.9); }
-                    100% { transform: translate(0px, 0px) scale(1); }
-                }
-                .animate-blob {
-                    animation: blob 7s infinite;
-                }
-                .animation-delay-2000 {
-                    animation-delay: 2s;
-                }
-                .animation-delay-4000 {
-                    animation-delay: 4s;
-                }
-            `}</style>
-        </>
+                                <Save size={18} />
+                                {loading ? "Creating…" : "Create post"}
+                            </button>
+                        </div>
+                    </form>
+                )}
+            </section>
+        </PageShell>
     );
 }

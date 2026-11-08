@@ -1,202 +1,142 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { Card } from "../ui/Card";
-import { SectionHeading } from "../ui/SectionHeading";
-import { CODE_SHOWCASES } from "@/app/constants/codeShowcases";
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { Code2, Copy, Check } from "lucide-react";
+import { Check, Copy } from "lucide-react";
+import { CODE_SHOWCASES } from "@/app/constants/codeShowcases";
+import { SectionHeading } from "../ui/SectionHeading";
+import { Reveal } from "../ui/Reveal";
+import { cn } from "@/app/lib/utils";
+
+/** Minimal syntax theme tuned to the site palette. */
+const theme: Record<string, React.CSSProperties> = {
+    'code[class*="language-"]': { color: "#d4d4d8", background: "none", fontFamily: "var(--font-mono)", fontSize: "12.5px", lineHeight: 1.7 },
+    'pre[class*="language-"]': { color: "#d4d4d8", background: "none", margin: 0, padding: "1.25rem 1.25rem 2rem", overflow: "auto" },
+    comment: { color: "#5c5c66", fontStyle: "italic" },
+    keyword: { color: "#b4a1ff" },
+    "class-name": { color: "#d4ff4f" },
+    function: { color: "#8fd3ff" },
+    string: { color: "#a6e3a1" },
+    "template-string": { color: "#a6e3a1" },
+    number: { color: "#fab387" },
+    boolean: { color: "#fab387" },
+    operator: { color: "#a1a1aa" },
+    punctuation: { color: "#71717a" },
+    builtin: { color: "#d4ff4f" },
+    property: { color: "#e4e4e7" },
+    decorator: { color: "#fab387" },
+};
+
+const EXT: Record<string, string> = { typescript: "ts", python: "py", javascript: "js", tsx: "tsx" };
 
 export const CodeShowcase = () => {
-    const [selectedIndex, setSelectedIndex] = useState(0);
+    const [active, setActive] = useState(0);
     const [copied, setCopied] = useState(false);
+    const current = CODE_SHOWCASES[active];
+    const fileName = `${current.title.split(" ").slice(0, 2).join("-").toLowerCase().replace(/[^a-z-]/g, "")}.${EXT[current.language] ?? "txt"}`;
 
-    const handleCopy = async () => {
-        await navigator.clipboard.writeText(CODE_SHOWCASES[selectedIndex].code);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+    const copy = async () => {
+        try {
+            await navigator.clipboard.writeText(current.code);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1800);
+        } catch {
+            /* clipboard unavailable */
+        }
     };
 
-    const selectedShowcase = CODE_SHOWCASES[selectedIndex];
-
     return (
-        <section id="code-showcase" className="flex flex-col items-center justify-center py-10 md:py-14 relative z-20">
+        <section id="code" className="mx-auto max-w-6xl scroll-mt-24 px-5 py-24 md:px-8 md:py-32">
             <SectionHeading
-                icon={<Code2 className="text-purple-500" size={48} />}
-                title="Code Showcase"
-                subtitle="Explore my coding style through these snippets"
+                index="04"
+                label="Code"
+                title={
+                    <>
+                        Read the <em>source</em>, not just the pitch
+                    </>
+                }
+                description="A few patterns I reach for — retrieval pipelines, distributed training, GPU vision and real-time 3D."
             />
 
-            <div className="w-full max-w-7xl px-4 md:px-10">
-                <div className="flex flex-col gap-6">
-                    {/* Sidebar Selector - Horizontal scroll on mobile */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="w-full"
-                    >
-                        <div className="flex lg:hidden gap-3 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
-                            {CODE_SHOWCASES.map((showcase, index) => (
-                                <motion.button
-                                    key={index}
-                                    onClick={() => setSelectedIndex(index)}
-                                    whileHover={{ scale: 1.02 }}
-                                    whileTap={{ scale: 0.98 }}
-                                    className={`flex-shrink-0 w-[280px] snap-start text-left p-4 rounded-xl transition-all duration-300 ${selectedIndex === index
-                                        ? 'bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border-2 border-purple-500'
-                                        : 'bg-white/5 border-2 border-white/10'
-                                        }`}
-                                >
-                                    <h3 className="text-base font-bold text-white mb-2 line-clamp-2">
-                                        {showcase.title}
-                                    </h3>
-                                    <div className="flex flex-wrap gap-2">
-                                        {showcase.tags.slice(0, 3).map((tag, i) => (
-                                            <span
-                                                key={i}
-                                                className="text-xs px-2 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20"
-                                            >
-                                                {tag}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </motion.button>
-                            ))}
-                        </div>
-                    </motion.div>
+            <Reveal>
+                <div className="grid overflow-hidden rounded-3xl border border-line bg-surface lg:grid-cols-[300px_1fr]">
+                    <div className="flex gap-2 overflow-x-auto border-b border-line p-3 scrollbar-hide lg:flex-col lg:overflow-visible lg:border-b-0 lg:border-r">
+                        {CODE_SHOWCASES.map((s, i) => (
+                            <button
+                                key={s.title}
+                                onClick={() => setActive(i)}
+                                className={cn(
+                                    "relative min-w-[220px] rounded-xl p-4 text-left transition-colors lg:min-w-0",
+                                    i === active ? "text-fg" : "text-muted hover:bg-white/[0.03] hover:text-fg"
+                                )}
+                            >
+                                {i === active && (
+                                    <motion.span
+                                        layoutId="code-tab"
+                                        className="absolute inset-0 rounded-xl border border-line-strong bg-white/[0.04]"
+                                        transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                                    />
+                                )}
+                                <span className="relative block font-mono text-[10px] uppercase tracking-[0.16em] text-dim">
+                                    {String(i + 1).padStart(2, "0")} · {s.language}
+                                </span>
+                                <span className="relative mt-1.5 block text-sm font-medium leading-snug">{s.title}</span>
+                            </button>
+                        ))}
+                    </div>
 
-                    <div className="flex flex-col lg:flex-row gap-6">
-                        {/* Sidebar Selector - Desktop */}
-                        <motion.div
-                            initial={{ opacity: 0, x: -50 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.5 }}
-                            className="hidden lg:block lg:w-1/3"
-                        >
-                            <div className="flex flex-col gap-3">
-                                {CODE_SHOWCASES.map((showcase, index) => (
-                                    <motion.button
-                                        key={index}
-                                        onClick={() => setSelectedIndex(index)}
-                                        whileHover={{ scale: 1.02 }}
-                                        whileTap={{ scale: 0.98 }}
-                                        className={`text-left p-4 rounded-xl transition-all duration-300 ${selectedIndex === index
-                                            ? 'bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border-2 border-purple-500'
-                                            : 'bg-white/5 border-2 border-white/10 hover:border-purple-500/50'
-                                            }`}
-                                    >
-                                        <h3 className="text-lg font-bold text-white mb-2 line-clamp-2">
-                                            {showcase.title}
-                                        </h3>
-                                        <div className="flex flex-wrap gap-2">
-                                            {showcase.tags.slice(0, 3).map((tag, i) => (
-                                                <span
-                                                    key={i}
-                                                    className="text-xs px-2 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20"
-                                                >
-                                                    {tag}
-                                                </span>
-                                            ))}
-                                            {showcase.tags.length > 3 && (
-                                                <span className="text-xs px-2 py-1 text-gray-400">
-                                                    +{showcase.tags.length - 3}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </motion.button>
+                    <div className="min-w-0">
+                        <div className="flex items-center justify-between border-b border-line px-4 py-3">
+                            <div className="flex items-center gap-3">
+                                <div className="flex gap-1.5">
+                                    <span className="size-2.5 rounded-full bg-white/15" />
+                                    <span className="size-2.5 rounded-full bg-white/15" />
+                                    <span className="size-2.5 rounded-full bg-white/15" />
+                                </div>
+                                <span className="font-mono text-xs text-muted">{fileName}</span>
+                            </div>
+                            <button
+                                onClick={copy}
+                                className="inline-flex items-center gap-1.5 rounded-lg border border-line px-2.5 py-1.5 font-mono text-[11px] text-muted transition-colors hover:border-line-strong hover:text-fg"
+                                aria-label="Copy code"
+                            >
+                                {copied ? <Check size={13} className="text-signal" /> : <Copy size={13} />}
+                                {copied ? "Copied" : "Copy"}
+                            </button>
+                        </div>
+
+                        <div className="border-b border-line px-5 py-4">
+                            <p className="text-sm text-muted">{current.description}</p>
+                            <div className="mt-3 flex flex-wrap gap-1.5">
+                                {current.tags.map((t) => (
+                                    <span key={t} className="rounded-md bg-accent/10 px-2 py-0.5 font-mono text-[10px] text-accent">
+                                        {t}
+                                    </span>
                                 ))}
                             </div>
-                        </motion.div>
+                        </div>
 
-                        {/* Code Display */}
-                        <motion.div
-                            initial={{ opacity: 0, x: 50 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.5 }}
-                            className="w-full lg:w-2/3"
-                        >
+                        <div className="relative h-[460px] overflow-hidden">
                             <AnimatePresence mode="wait">
                                 <motion.div
-                                    key={selectedIndex}
-                                    initial={{ opacity: 0, y: 20 }}
+                                    key={active}
+                                    initial={{ opacity: 0, y: 8 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -20 }}
-                                    transition={{ duration: 0.3 }}
+                                    exit={{ opacity: 0, y: -8 }}
+                                    transition={{ duration: 0.25 }}
+                                    className="h-full overflow-auto"
                                 >
-                                    <Card className="overflow-hidden">
-                                        <div className="flex flex-col gap-4">
-                                            {/* Header */}
-                                            <div className="flex flex-col gap-3">
-                                                <h2 className="text-2xl font-bold text-white">
-                                                    {selectedShowcase.title}
-                                                </h2>
-                                                <p className="text-gray-400">{selectedShowcase.description}</p>
-
-                                                {/* All Tags */}
-                                                <div className="flex flex-wrap gap-2">
-                                                    {selectedShowcase.tags.map((tag, i) => (
-                                                        <span
-                                                            key={i}
-                                                            className="text-xs px-3 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20"
-                                                        >
-                                                            {tag}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                            </div>
-
-                                            {/* Code Block */}
-                                            <div className="relative">
-                                                <div className="absolute top-3 right-3 z-10 flex items-center gap-2">
-                                                    <span className="text-xs text-gray-400 bg-black/50 px-2 py-1 rounded">
-                                                        {selectedShowcase.language}
-                                                    </span>
-                                                    <button
-                                                        onClick={handleCopy}
-                                                        className="flex items-center gap-2 text-xs bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 px-3 py-1 rounded transition-colors"
-                                                    >
-                                                        {copied ? (
-                                                            <>
-                                                                <Check size={14} />
-                                                                <span>Copied!</span>
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                <Copy size={14} />
-                                                                <span>Copy</span>
-                                                            </>
-                                                        )}
-                                                    </button>
-                                                </div>
-
-                                                <div className="relative overflow-hidden rounded-lg border border-white/10 max-h-[600px] overflow-y-auto">
-                                                    <SyntaxHighlighter
-                                                        language={selectedShowcase.language}
-                                                        style={vscDarkPlus}
-                                                        customStyle={{
-                                                            margin: 0,
-                                                            borderRadius: '0.5rem',
-                                                            fontSize: '0.875rem',
-                                                            lineHeight: '1.5',
-                                                        }}
-                                                        showLineNumbers
-                                                        wrapLines
-                                                    >
-                                                        {selectedShowcase.code}
-                                                    </SyntaxHighlighter>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Card>
+                                    <SyntaxHighlighter language={current.language} style={theme} showLineNumbers lineNumberStyle={{ color: "#3f3f46", minWidth: "2.5em" }}>
+                                        {current.code}
+                                    </SyntaxHighlighter>
                                 </motion.div>
                             </AnimatePresence>
-                        </motion.div>
+                            <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-surface to-transparent" />
+                        </div>
                     </div>
                 </div>
-            </div>
+            </Reveal>
         </section>
     );
 };

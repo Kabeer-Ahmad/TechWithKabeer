@@ -1,370 +1,192 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Card } from "../ui/Card";
+import { useRef, useState } from "react";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll, useSpring } from "framer-motion";
+import { Check } from "lucide-react";
 import { SectionHeading } from "../ui/SectionHeading";
-import { Lightbulb, Code, Rocket, Settings, CheckCircle, Database, Cloud, Cpu, Zap, Terminal } from "lucide-react";
-import { useEffect, useState } from "react";
-import HexagonBackground from "../3d/HexagonBackground";
+import { cn } from "@/app/lib/utils";
 
-const phases = [
+const PHASES = [
     {
-        number: "01",
-        title: "Planning & Strategy",
-        icon: Lightbulb,
-        description: "Understanding requirements, defining scope, and creating a roadmap for success.",
-        color: "from-purple-500 to-pink-500",
-        borderColor: "border-purple-500",
-        position: { desktop: "top-0 left-1/2 -translate-x-1/2", mobile: "top-0" },
+        title: "Discover",
+        summary: "Understand the problem, the people who have it, and what success looks like before writing any code.",
+        activities: ["Kick-off call and a walk through your current workflow", "Audit of existing systems, data and constraints", "Scope cut into milestones you can ship"],
+        output: "A one-page plan with milestones",
     },
     {
-        number: "02",
-        title: "Design & Architecture",
-        icon: Code,
-        description: "Crafting scalable architecture and designing intuitive user experiences.",
-        color: "from-pink-500 to-cyan-500",
-        borderColor: "border-pink-500",
-        position: { desktop: "top-48 left-0", mobile: "top-64" },
+        title: "Design",
+        summary: "Shape the architecture, data model and user flows — and prove the risky parts early.",
+        activities: ["Data model, API contracts and system diagram", "Clickable UI flows for the key screens", "AI feasibility spike on your real data, not demos"],
+        output: "Prototype + technical design",
     },
     {
-        number: "03",
-        title: "Development & Progress",
-        icon: Settings,
-        description: "Building features iteratively with regular updates and quality assurance.",
-        color: "from-cyan-500 to-blue-500",
-        borderColor: "border-cyan-500",
-        position: { desktop: "top-96 left-1/4", mobile: "top-128" },
+        title: "Build",
+        summary: "Ship in small, reviewed increments you can click through every week.",
+        activities: ["Weekly demos on a live preview URL", "Typed APIs, tests and code review on every change", "Eval sets for AI features so quality is measured"],
+        output: "Working software, every week",
     },
     {
-        number: "04",
-        title: "Deployment & Launch",
-        icon: Rocket,
-        description: "Seamless deployment to production with monitoring and optimization.",
-        color: "from-blue-500 to-purple-500",
-        borderColor: "border-blue-500",
-        position: { desktop: "top-96 right-1/4", mobile: "top-192" },
+        title: "Launch",
+        summary: "Go live with the boring-but-critical pieces in place, so launch day is uneventful.",
+        activities: ["CI/CD with one-click rollback", "Monitoring, alerts and LLM cost caps", "Handover docs and a short recorded walkthrough"],
+        output: "Production release + runbook",
     },
     {
-        number: "05",
-        title: "Maintenance & Support",
-        icon: CheckCircle,
-        description: "Ongoing support, updates, and continuous improvement based on feedback.",
-        color: "from-purple-500 to-pink-500",
-        borderColor: "border-purple-500",
-        position: { desktop: "top-48 right-0", mobile: "top-256" },
+        title: "Iterate",
+        summary: "Measure what real users do and keep improving after go-live.",
+        activities: ["Analytics and a feedback loop from day one", "Prompt and model tuning against the eval set", "Performance and cost optimisation"],
+        output: "Measured improvements",
     },
 ];
 
-// Tech icons that flow along the paths
-const techIcons = [Database, Cloud, Cpu, Zap, Terminal, Code];
+const pad = (n: number) => String(n).padStart(2, "0");
 
-// Complete sequential path: Phase 1 → 2 → 3 → 4 → 5 (now flows through right side too)
-const completePath = [
-    // Start at Phase 1 (center top)
-    { x: "50%", y: "15%" },
-    // Move to Phase 2 (left)
-    { x: "37%", y: "24%" },
-    { x: "25%", y: "32%" },
-    { x: "18%", y: "40%" },
-    { x: "12%", y: "48%" },
-    // Move to Phase 3 (bottom left)
-    { x: "15%", y: "57%" },
-    { x: "18%", y: "65%" },
-    { x: "22%", y: "72%" },
-    { x: "27%", y: "78%" },
-    // Move to Phase 4 (bottom right)
-    { x: "37%", y: "80%" },
-    { x: "48%", y: "82%" },
-    { x: "58%", y: "80%" },
-    { x: "67%", y: "78%" },
-    // Move to Phase 5 (right)
-    { x: "75%", y: "65%" },
-    { x: "82%", y: "57%" },
-    { x: "88%", y: "48%" },
-];
-
-export const MyApproach = () => {
-    const [particles, setParticles] = useState<{ id: number; icon: number }[]>([]);
-
-    useEffect(() => {
-        // Generate flowing tech icons following sequential path 1→2→3→4→5
-        const interval = setInterval(() => {
-            const newParticle = {
-                id: Date.now(),
-                icon: Math.floor(Math.random() * techIcons.length),
-            };
-            setParticles((prev) => [...prev.slice(-8), newParticle]);
-        }, 1500);
-
-        return () => clearInterval(interval);
-    }, []);
-
+const Dial = ({ active, progress }: { active: number; progress: ReturnType<typeof useSpring> }) => {
+    const phase = PHASES[active];
     return (
-        <section id="approach" className="flex flex-col items-center justify-center py-10 md:py-14 relative z-20 overflow-hidden bg-[#030014]">
-            {/* Hexagon Background */}
-            <HexagonBackground />
-
-            <SectionHeading
-                icon={<Lightbulb className="text-purple-500" size={48} />}
-                title="My Approach"
-                subtitle="A systematic process to deliver exceptional results"
-                gradient="from-purple-500 via-pink-500 to-cyan-500"
-            />
-
-            <div className="w-full max-w-7xl px-4 md:px-10">
-                {/* Desktop View - Map Structure */}
-                <div className="hidden lg:block relative h-[600px]">
-                    {/* Animated SVG Connections */}
-                    <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
-                        <defs>
-                            <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stopColor="#a855f7" />
-                                <stop offset="100%" stopColor="#ec4899" />
-                            </linearGradient>
-                            <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stopColor="#ec4899" />
-                                <stop offset="100%" stopColor="#06b6d4" />
-                            </linearGradient>
-                            <linearGradient id="gradient3" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stopColor="#06b6d4" />
-                                <stop offset="100%" stopColor="#3b82f6" />
-                            </linearGradient>
-                            <linearGradient id="gradient4" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stopColor="#3b82f6" />
-                                <stop offset="100%" stopColor="#a855f7" />
-                            </linearGradient>
-                        </defs>
-
-                        {/* Solid Connection Lines - Sequential flow */}
-                        {/* Line 1: Phase 1 to Phase 2 */}
-                        <path
-                            d="M 50% 15% Q 25% 32% 12% 48%"
-                            stroke="url(#gradient1)"
-                            strokeWidth="3"
-                            fill="none"
-                            opacity="0.8"
-                        />
-                        {/* Line 2: Phase 2 to Phase 3 */}
-                        <path
-                            d="M 12% 48% Q 17% 65% 27% 78%"
-                            stroke="url(#gradient2)"
-                            strokeWidth="3"
-                            fill="none"
-                            opacity="0.8"
-                        />
-                        {/* Line 3: Phase 3 to Phase 4 */}
-                        <path
-                            d="M 27% 78% Q 47% 82% 67% 78%"
-                            stroke="url(#gradient3)"
-                            strokeWidth="3"
-                            fill="none"
-                            opacity="0.8"
-                        />
-                        {/* Line 4: Phase 4 to Phase 5 */}
-                        <path
-                            d="M 67% 78% Q 80% 65% 88% 48%"
-                            stroke="url(#gradient4)"
-                            strokeWidth="3"
-                            fill="none"
-                            opacity="0.8"
-                        />
-
-                        {/* Pulsing dots at connection points */}
-                        <motion.circle
-                            cx="50%"
-                            cy="15%"
-                            r="4"
-                            fill="#a855f7"
-                            animate={{ r: [4, 6, 4], opacity: [0.5, 1, 0.5] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                        />
-                        <motion.circle
-                            cx="12%"
-                            cy="48%"
-                            r="4"
-                            fill="#ec4899"
-                            animate={{ r: [4, 6, 4], opacity: [0.5, 1, 0.5] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                        />
-                        <motion.circle
-                            cx="27%"
-                            cy="78%"
-                            r="4"
-                            fill="#06b6d4"
-                            animate={{ r: [4, 6, 4], opacity: [0.5, 1, 0.5] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                        />
-                        <motion.circle
-                            cx="67%"
-                            cy="78%"
-                            r="4"
-                            fill="#3b82f6"
-                            animate={{ r: [4, 6, 4], opacity: [0.5, 1, 0.5] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                        />
-                        <motion.circle
-                            cx="88%"
-                            cy="48%"
-                            r="4"
-                            fill="#a855f7"
-                            animate={{ r: [4, 6, 4], opacity: [0.5, 1, 0.5] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                        />
-                    </svg>
-
-                    {/* Flowing Tech Icons - Following sequential path 1→2→3→4→5 */}
-                    {particles.map((particle) => {
-                        const TechIcon = techIcons[particle.icon];
-
+        <div className="panel relative overflow-hidden p-8">
+            <div aria-hidden className="absolute inset-0 bg-grid opacity-40 [background-size:32px_32px] [mask-image:radial-gradient(circle_at_50%_40%,black,transparent_70%)]" />
+            <div className="relative mx-auto size-64">
+                <svg viewBox="0 0 120 120" className="size-full -rotate-90">
+                    <circle cx="60" cy="60" r="54" fill="none" stroke="rgb(255 255 255 / 0.06)" strokeWidth="1.5" />
+                    {PHASES.map((_, i) => {
+                        const a = (i / PHASES.length) * Math.PI * 2;
                         return (
-                            <motion.div
-                                key={particle.id}
-                                className="absolute w-6 h-6 rounded-full bg-purple-500/80 flex items-center justify-center backdrop-blur-sm shadow-lg"
-                                initial={{ left: completePath[0].x, top: completePath[0].y, opacity: 1 }}
-                                animate={{
-                                    left: completePath.map(c => c.x),
-                                    top: completePath.map(c => c.y),
-                                    opacity: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-                                }}
-                                transition={{ duration: 9, ease: "linear" }}
-                                style={{ zIndex: 5 }}
-                            >
-                                <TechIcon size={14} className="text-white" />
-                            </motion.div>
+                            <circle
+                                key={i}
+                                cx={(60 + Math.cos(a) * 54).toFixed(2)}
+                                cy={(60 + Math.sin(a) * 54).toFixed(2)}
+                                r={i <= active ? 2.6 : 1.8}
+                                className={cn("transition-all duration-500", i <= active ? "fill-accent" : "fill-white/20")}
+                            />
                         );
                     })}
-
-                    {/* Phase Cards */}
-                    {phases.map((phase, index) => (
+                    <motion.circle
+                        cx="60"
+                        cy="60"
+                        r="54"
+                        fill="none"
+                        stroke="url(#dial)"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        style={{ pathLength: progress }}
+                    />
+                    <defs>
+                        <linearGradient id="dial" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stopColor="#7c5cff" />
+                            <stop offset="60%" stopColor="#b4a1ff" />
+                            <stop offset="100%" stopColor="#d4ff4f" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <AnimatePresence mode="wait">
                         <motion.div
-                            key={index}
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.5, delay: index * 0.15 }}
-                            className={`absolute ${phase.position.desktop} w-64`}
-                            style={{ zIndex: 10 }}
+                            key={active}
+                            initial={{ opacity: 0, y: 16, filter: "blur(6px)" }}
+                            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                            exit={{ opacity: 0, y: -16, filter: "blur(6px)" }}
+                            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                            className="text-center"
                         >
-                            <Card className={`p-6 border-l-4 ${phase.borderColor} hover:scale-105 transition-all duration-300 backdrop-blur-sm bg-[#030014]/90`}>
-                                <div className="flex flex-col gap-4">
-                                    {/* Number Badge */}
-                                    <div className="flex items-center justify-between">
-                                        <div className={`w-10 h-10 rounded-full bg-gradient-to-r ${phase.color} flex items-center justify-center text-white font-bold shadow-lg`}>
-                                            {phase.number}
-                                        </div>
-                                        <div className={`p-2 rounded-full bg-gradient-to-r ${phase.color} bg-opacity-10`}>
-                                            <phase.icon className="text-white" size={24} />
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <h3 className="text-lg font-bold text-white mb-2">{phase.title}</h3>
-                                        <p className="text-gray-400 text-sm">{phase.description}</p>
-                                    </div>
-                                </div>
-                            </Card>
+                            <span className="block font-serif text-7xl italic leading-none text-fg">{pad(active + 1)}</span>
+                            <span className="mt-2 block font-mono text-[11px] uppercase tracking-[0.2em] text-accent">{phase.title}</span>
                         </motion.div>
+                    </AnimatePresence>
+                </div>
+            </div>
+
+            <div className="relative mt-8 border-t border-line pt-6">
+                <p className="eyebrow">You get</p>
+                <AnimatePresence mode="wait">
+                    <motion.p
+                        key={active}
+                        initial={{ opacity: 0, x: 12 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -12 }}
+                        transition={{ duration: 0.3 }}
+                        className="mt-2 text-xl font-medium tracking-tight text-fg"
+                    >
+                        {phase.output}
+                    </motion.p>
+                </AnimatePresence>
+                <div className="mt-6 flex gap-1.5">
+                    {PHASES.map((p, i) => (
+                        <span key={p.title} className="h-1 flex-1 overflow-hidden rounded-full bg-white/10">
+                            <span className={cn("block h-full rounded-full bg-accent transition-transform duration-500 origin-left", i <= active ? "scale-x-100" : "scale-x-0")} />
+                        </span>
                     ))}
                 </div>
+            </div>
+        </div>
+    );
+};
 
-                {/* Mobile/Tablet View - Vertical Pipeline */}
-                <div className="lg:hidden relative">
-                    {/* Connecting Line */}
-                    <div className="absolute left-6 top-0 bottom-0 w-1 bg-gradient-to-b from-purple-500 via-pink-500 via-cyan-500 to-blue-500 opacity-30" />
+export const MyApproach = () => {
+    const ref = useRef<HTMLOListElement>(null);
+    const [active, setActive] = useState(0);
+    const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.55", "end 0.55"] });
+    const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, restDelta: 0.001 });
 
-                    <div className="flex flex-col gap-8">
-                        {phases.map((phase, index) => (
-                            <motion.div
-                                key={index}
-                                initial={{ opacity: 0, x: -50 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 0.5, delay: index * 0.1 }}
-                                className="relative flex gap-6"
-                            >
-                                {/* Phase Number Circle */}
-                                <div className="flex-shrink-0">
-                                    <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${phase.color} flex items-center justify-center text-white font-bold text-lg shadow-lg relative z-10`}>
-                                        {phase.number}
-                                    </div>
-                                </div>
+    useMotionValueEvent(scrollYProgress, "change", (v) => {
+        const i = Math.min(PHASES.length - 1, Math.max(0, Math.floor(v * PHASES.length)));
+        setActive((prev) => (prev === i ? prev : i));
+    });
 
-                                {/* Phase Card */}
-                                <Card className={`flex-1 p-6 border-l-4 ${phase.borderColor}`}>
-                                    <div className="flex flex-col gap-4">
-                                        <div className="flex items-center gap-4">
-                                            <div className={`p-3 rounded-full bg-gradient-to-r ${phase.color} bg-opacity-10`}>
-                                                <phase.icon className="text-white" size={28} />
-                                            </div>
-                                            <h3 className="text-xl font-bold text-white">{phase.title}</h3>
-                                        </div>
-                                        <p className="text-gray-400 text-sm">{phase.description}</p>
-                                    </div>
-                                </Card>
-                            </motion.div>
-                        ))}
+    return (
+        <section id="approach" className="mx-auto max-w-6xl scroll-mt-24 px-5 py-24 md:px-8 md:py-32">
+            <SectionHeading
+                index="06"
+                label="Process"
+                title={
+                    <>
+                        How a project <em>moves</em>
+                    </>
+                }
+                description="Five stages, each with something concrete you can see, click or measure — no black box between kick-off and launch."
+            />
+
+            <div className="grid gap-10 md:grid-cols-[minmax(0,400px)_1fr] md:gap-16">
+                <div className="hidden md:block">
+                    <div className="sticky top-28">
+                        <Dial active={active} progress={progress} />
                     </div>
                 </div>
 
-                {/* Bottom CTA */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.6 }}
-                    className="mt-16 text-center relative z-30"
-                >
-                    {/* Grid Background for CTA */}
-                    <div className="absolute inset-0 -mx-4 md:-mx-10 -my-8 z-0">
-                        <div
-                            className="absolute inset-0 opacity-10"
-                            style={{
-                                backgroundImage: `
-                                    linear-gradient(to right, rgba(168, 85, 247, 0.15) 1px, transparent 1px),
-                                    linear-gradient(to bottom, rgba(168, 85, 247, 0.15) 1px, transparent 1px)
-                                `,
-                                backgroundSize: '40px 40px'
-                            }}
-                        />
-                        {/* Fade out edges */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#030014]" />
-                        <div className="absolute inset-0 bg-gradient-to-r from-[#030014] via-transparent to-[#030014]" />
-                    </div>
-
-                    <div className="relative z-10 bg-white/[0.02] backdrop-blur-sm rounded-2xl p-8 md:p-12 overflow-hidden">
-                        {/* Grid/Mesh background for entire container */}
-                        <div
-                            className="absolute inset-0 opacity-60"
-                            style={{
-                                backgroundImage: `
-                                    linear-gradient(to right, rgba(168, 85, 247, 0.5) 1px, transparent 1px),
-                                    linear-gradient(to bottom, rgba(168, 85, 247, 0.5) 1px, transparent 1px)
-                                `,
-                                backgroundSize: '20px 20px'
-                            }}
-                        />
-
-                        {/* Radial fade overlay */}
-                        <div
-                            className="absolute inset-0"
-                            style={{
-                                background: 'radial-gradient(circle at center, transparent 0%, transparent 40%, rgba(3, 0, 20, 0.8) 80%, rgba(3, 0, 20, 1) 100%)'
-                            }}
-                        />
-
-                        <div className="relative z-10">
-                            <p className="text-white text-xl md:text-2xl font-semibold mb-2">
-                                Let's bring your ideas to life
-                            </p>
-                            <p className="text-gray-300 text-base md:text-lg mb-6">
-                                Ready to bring your project to life with this proven approach?
-                            </p>
-                            <a
-                                href="#contact"
-                                className="inline-block px-8 py-4 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-semibold hover:scale-105 hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] transition-all duration-300"
+                <ol ref={ref} className="relative space-y-4 md:space-y-[18vh] md:py-[8vh]">
+                    {PHASES.map((p, i) => {
+                        const isActive = i === active;
+                        return (
+                            <li
+                                key={p.title}
+                                className={cn(
+                                    "panel relative p-6 transition-all duration-500 md:p-8",
+                                    isActive ? "md:border-accent/40 md:bg-white/[0.04] md:opacity-100" : "md:opacity-35 md:blur-[1px]"
+                                )}
                             >
-                                Let's Get Started
-                            </a>
-                        </div>
-                    </div>
-                </motion.div>
+                                <div className="flex items-baseline justify-between">
+                                    <span className="font-mono text-xs text-dim">Step {pad(i + 1)}</span>
+                                    <span className="font-serif text-5xl italic leading-none text-white/[0.08] md:hidden">{i + 1}</span>
+                                </div>
+                                <h3 className="mt-3 text-3xl font-medium tracking-tight text-fg md:text-4xl">{p.title}</h3>
+                                <p className="mt-3 max-w-xl text-pretty leading-relaxed text-muted">{p.summary}</p>
+                                <ul className="mt-6 space-y-3">
+                                    {p.activities.map((a) => (
+                                        <li key={a} className="flex items-start gap-3 text-sm text-fg/85">
+                                            <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-accent/15 text-accent">
+                                                <Check size={12} strokeWidth={3} />
+                                            </span>
+                                            {a}
+                                        </li>
+                                    ))}
+                                </ul>
+                                <p className="mt-6 border-t border-line pt-4 font-mono text-[11px] uppercase tracking-[0.14em] text-dim md:hidden">
+                                    You get · <span className="text-accent">{p.output}</span>
+                                </p>
+                            </li>
+                        );
+                    })}
+                </ol>
             </div>
         </section>
     );
